@@ -1,26 +1,26 @@
 import os
 import discord
+from discord.ext import commands
 from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 intents = discord.Intents.default()
-client = discord.Client(intents=intents)
-
+intents.members = True
+intents.message_content = True
+bot = commands.Bot(command_prefix='$', intents=intents)
 # bot event (when its ready)
 
-print(client)
 
-
-@client.event
+@bot.event
 async def on_ready():
-    for guild in client.guilds:
+    for guild in bot.guilds:
         if guild.name == GUILD:
             break
 
     print(
-        f'{client.user} is connected to the following guild:\n'
+        f'{bot.user} is connected to the following guild:\n'
         f'{guild.name}(id: {guild.id})'
     )
 
@@ -28,9 +28,10 @@ async def on_ready():
     print(f'Guild Members:\n - {members}')
 
 
-@client.event
+@bot.event
 async def on_message(message):
-    if message.author == client.user:
+    await bot.process_commands(message)
+    if message.author == bot.user:
         return
 
     steve_jobs_quote = "Innovation distinguishes between a leader and a follower."
@@ -41,4 +42,9 @@ async def on_message(message):
     #     response = steve_jobs_quote
 
 
-client.run(TOKEN)
+@bot.command()
+async def test(ctx, *args):
+    arguments = ' '.join(args)
+    await ctx.send(arguments)
+
+bot.run(TOKEN)
