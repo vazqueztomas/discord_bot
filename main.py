@@ -38,13 +38,17 @@ async def on_message(message):
 
     if (message.content == 'steve'):
         await message.channel.send(steve_jobs_quote)
-    # if message.content:
-    #     response = steve_jobs_quote
 
 
 @bot.command()
 async def test(ctx, *args):
+    """Tells you a member's roles."""
     arguments = ' '.join(args)
     await ctx.send(arguments)
+
+
+@bot.command()
+async def add(ctx, a: int, b: int):
+    await ctx.send(a+b)
 
 bot.run(TOKEN)
